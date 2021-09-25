@@ -5,7 +5,7 @@
 #include <ignition/math/Vector3.hh>
 
 const double VEL = -0.3;
-const int EOL_CONVEYOR = -25;
+const int EOL_CONVEYOR = -30;
 
 namespace gazebo
 {
