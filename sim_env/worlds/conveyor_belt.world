@@ -23,10 +23,14 @@
     </include>
 
     <include>
-      <uri>model://camera</uri>
+      <uri>model://background_wall</uri>
     </include>
 
-    <plugin name="hello_world" filename="libhello_world.so"/>
+    <include>
+      <uri>model://camera_x</uri>
+    </include>
+
+    <!-- <plugin name="hello_world" filename="libhello_world.so"/> -->
     <!-- <plugin name="factory" filename="libfactory.so"/> -->
 
   </world>

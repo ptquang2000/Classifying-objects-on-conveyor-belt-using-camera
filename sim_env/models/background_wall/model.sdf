@@ -1,13 +1,13 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
-  <model name="conveyor_belt">
-    <pose>0 0 0.5 0 0 0</pose>
+  <model name="background_wall">
+    <pose>-3 0 0 0 0 0</pose>
     <static>true</static>
     <link name="link">
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 7 0.05</size>
+            <size>0.05 7 4</size>
           </box>
         </geometry>
       </collision>
@@ -15,13 +15,13 @@
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 7 0.05</size>
+            <size>0.05 7 4</size>
           </box>
         </geometry>
         <material>
           <script>
             <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/FlatBlack</name>
+            <name>Gazebo/Green</name>
           </script>
         </material>
       </visual>

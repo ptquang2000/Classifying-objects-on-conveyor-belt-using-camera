@@ -33,13 +33,18 @@ include_directories(
 # Gazebo set flags
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
-add_library(hello_world SHARED src/hello_world.cc)
-target_link_libraries(hello_world 
+#add_library(hello_world SHARED src/hello_world.cc)
+#target_link_libraries(hello_world 
+#  ${catkin_LIBRARIES}
+#  ${GAZEBO_LIBRARIES}
+#)
+add_library(model_push SHARED src/model_push.cc)
+target_link_libraries(model_push 
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
 )
-add_library(model_push SHARED src/model_push.cc)
-target_link_libraries(model_push 
+add_library(gazebo_ros_camera SHARED src/gazebo_ros_camera.cc)
+target_link_libraries(gazebo_ros_camera 
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
 )

@@ -20,6 +20,7 @@ def object_spawner():
     model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
     with open(model_path, 'r') as f:
       model_sdf = f.read()
+    # conveyor y = 7, z = 0.05, pose z = 0.5
     model_pose =  Pose(Point(0, 3, 0.525), Quaternion(0, 0, 0, 0))
     model_name += str(rospy.get_rostime().secs)
     
@@ -31,7 +32,7 @@ def object_spawner():
 
 if __name__ == '__main__':
   rospy.init_node('object_spawner', anonymous=True)
-  rate = rospy.Rate(0.25)
+  rate = rospy.Rate(0.2)
   try:
     while not rospy.is_shutdown():
       object_spawner()

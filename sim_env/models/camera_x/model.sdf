@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
-  <model name="camera">
+  <model name="camera_x">
     <pose>1.25 0 0.275 0 0 3.141592654</pose>
     <static>true</static>
     <link name="stand-link">
@@ -36,6 +36,12 @@
             <size>0.05 0.05 0.05</size>
           </box>
         </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name>
+          </script>
+        </material>
       </visual>
 
       <sensor name='camera-sensor' type='camera'>
@@ -47,13 +53,25 @@
           </image>
           <clip>
             <near>0.75</near>
-            <far>1.75</far>
+            <far>100</far>
+            <!-- <far>1.75</far> -->
           </clip>
         </camera>
         <always_on>1</always_on>
         <update_rate>30</update_rate>
         <visualize>true</visualize>
+
+        <plugin name="camera-x-controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>camera/camera_x</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_x_info</cameraInfoTopicName>
+          <frameName>camera_x_frame</frameName>
+        </plugin>
+
       </sensor>
     </link>
+
   </model>
 </sdf>
