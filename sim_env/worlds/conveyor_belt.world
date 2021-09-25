@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+  <world name="conveyor_belt_world">
+
+    <!-- Add a ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+        </script>
+      </material>
+    </include>
+  
+    <!-- Global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <uri>model://conveyor_belt</uri>
+    </include>
+
+    <include>
+      <uri>model://camera</uri>
+    </include>
+
+    <plugin name="hello_world" filename="libhello_world.so"/>
+    <!-- <plugin name="factory" filename="libfactory.so"/> -->
+
+  </world>
+</sdf>
