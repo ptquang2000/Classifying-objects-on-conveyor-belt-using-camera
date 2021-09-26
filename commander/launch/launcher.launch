@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <!-- Start simulation -->
+  <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
+
+  <node name="shape_detector" pkg="commander" type="shape_detector.py" output="screen"/>
+
+</launch>
