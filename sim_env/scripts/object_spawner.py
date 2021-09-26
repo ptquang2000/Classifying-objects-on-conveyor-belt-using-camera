@@ -25,10 +25,10 @@ def object_spawner():
     model_name += str(rospy.get_rostime().secs)
     
     status_message = spawn_sdf_model(model_name, model_sdf, "", model_pose, "world")
-    print("Status message: %s"%status_message)
+    rospy.loginfo("Status message: %s"%status_message)
     
   except rospy.ServiceException as e:
-    print("Service call failed: %s"%e)
+    rospy.loginfo("Service call failed: %s"%e)
 
 if __name__ == '__main__':
   rospy.init_node('object_spawner', anonymous=True)

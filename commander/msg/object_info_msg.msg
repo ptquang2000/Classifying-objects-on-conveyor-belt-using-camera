@@ -1,0 +1,2 @@
+string shape
+string color
