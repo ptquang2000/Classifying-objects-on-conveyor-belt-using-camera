@@ -8,9 +8,20 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   cv_bridge
   std_msgs
+  message_generation
 )
 
 find_package(OpenCV 4 REQUIRED)
+
+add_message_files(
+  FILES
+  object_info_msg.msg
+)
+
+generate_messages(
+	DEPENDENCIES
+	std_msgs
+)
 
 catkin_package(
   CATKIN_DEPENDS
@@ -19,6 +30,7 @@ catkin_package(
   sensor_msgs
   cv_bridge
   std_msgs
+  message_runtime
 )
 
 #catkin_install_python(PROGRAMS 

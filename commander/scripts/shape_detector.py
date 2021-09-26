@@ -4,11 +4,13 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2 as cv
 import numpy as np
+from commander.msg import object_info_msg
 
 class shape_detector():
-  def __init__(self, img):
+  def __init__(self, img, pub):
     self.raw_img = img
     self.img = self.resize_frame
+    self.pub = pub
 
   @property
   def resize_frame(self, scale=0.25):
@@ -34,6 +36,8 @@ class shape_detector():
     return src
   
   def detecting(self):
+    msg = object_info_msg()
+    msg.shape = 'Unidentify'
     contours, _ = cv.findContours(self.pre_processing, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     blank = np.zeros(self.img.shape, dtype='uint8')
     
@@ -46,23 +50,23 @@ class shape_detector():
       cv.drawContours(blank, [approx], -1, (0, 255, 0), 2)
       
       if (edge_count:=len(approx)) == 3:
-        rospy.loginfo('Object shape: Triangle')
+        msg.shape = 'Triangle'
       elif edge_count == 4:
-        rospy.loginfo('Object shape: Retangle')
-      elif 13 <= edge_count <= 15:
-        rospy.loginfo('Object shape: Circle')
-      else:
-        rospy.loginfo('Unidentify')
-
+        msg.shape = 'Triangle'
+      elif 12 <= edge_count <= 16:
+        msg.shape = 'Circle'
       rospy.loginfo(f'Edge count: {edge_count}')
 
     cv.imshow('Contours', blank)
+    # publish message
+    self.pub.publish(msg)
 
 def callback(msg):
+  pub = rospy.Publisher('object_info', object_info_msg, queue_size=10)
   bridge = CvBridge()
   try:
     cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-    sd = shape_detector(cv_image)
+    sd = shape_detector(cv_image, pub)
     sd.detecting()
     if cv.waitKey(1) == 27:
       cv.destroyAllWindows()
@@ -73,8 +77,6 @@ def callback(msg):
 def main():
   rospy.init_node('image_processor')
   rospy.Subscriber('camera/camera_x/image_raw', Image, callback)
-  rate = rospy.Rate(0.2)
-  rate.sleep()
   rospy.spin()
 
 if __name__ == "__main__":
