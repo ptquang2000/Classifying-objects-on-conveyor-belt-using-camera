@@ -6,9 +6,11 @@ from rospkg import RosPack
 from random import randint
 
 models = [
-'sphere',
+'sphere', 'pyramid',
 'red_sphere', 'blue_sphere', 'green_sphere',
-'yellow_sphere', 'orange_sphere', 'purple_sphere'
+'yellow_sphere', 'orange_sphere', 'purple_sphere',
+'red_pyramid', 'blue_pyramid', 'green_pyramid',
+'yellow_pyramid', 'orange_pyramid', 'purple_pyramid'
 ]
 
 def object_spawner():
@@ -29,14 +31,14 @@ def object_spawner():
     model_name += str(rospy.get_rostime().secs)
     
     status_message = spawn_sdf_model(model_name, model_sdf, "", model_pose, "world")
-    rospy.loginfo("Status message: %s"%status_message)
+    #rospy.loginfo("Status message: %s"%status_message)
     
   except rospy.ServiceException as e:
     rospy.loginfo("Service call failed: %s"%e)
 
 if __name__ == '__main__':
   rospy.init_node('object_spawner', anonymous=True)
-  rate = rospy.Rate(0.2)
+  rate = rospy.Rate(0.4)
   try:
     while not rospy.is_shutdown():
       object_spawner()
