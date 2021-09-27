@@ -3,9 +3,12 @@ import rospy
 from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import Pose, Point, Quaternion
 from rospkg import RosPack
+from random import randint
 
 models = [
-  'sphere'
+'sphere',
+'red_sphere', 'blue_sphere', 'green_sphere',
+'yellow_sphere', 'orange_sphere', 'purple_sphere'
 ]
 
 def object_spawner():
@@ -16,7 +19,8 @@ def object_spawner():
     # spawn object
     spawn_sdf_model = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
 
-    model_name = models[0]
+    model_name = models[randint(0, len(models) - 1)]
+    #model_name = models[1]
     model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
     with open(model_path, 'r') as f:
       model_sdf = f.read()

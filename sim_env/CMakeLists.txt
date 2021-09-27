@@ -48,11 +48,11 @@ target_link_libraries(gazebo_ros_camera
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
 )
-# add_library(factory SHARED src/factory.cc)
-# target_link_libraries(factory 
-#   ${catkin_LIBRARIES}
-#   ${GAZEBO_LIBRARIES}
-# )
+#add_library(factory SHARED src/factory.cc)
+#target_link_libraries(factory 
+#  ${catkin_LIBRARIES}
+#  ${GAZEBO_LIBRARIES}
+#)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 

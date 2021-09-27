@@ -55,9 +55,9 @@ class shape_detector():
         msg.shape = 'Triangle'
       elif 12 <= edge_count <= 16:
         msg.shape = 'Circle'
-      rospy.loginfo(f'Edge count: {edge_count}')
+    #  rospy.loginfo(f'Edge count: {edge_count}')
 
-    cv.imshow('Contours', blank)
+    #cv.imshow('Contours', blank)
     # publish message
     self.pub.publish(msg)
 
@@ -68,8 +68,8 @@ def callback(msg):
     cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     sd = shape_detector(cv_image, pub)
     sd.detecting()
-    if cv.waitKey(1) == 27:
-      cv.destroyAllWindows()
+    #if cv.waitKey(1) == 27:
+    #  cv.destroyAllWindows()
 
   except CvBridgeError as e:
     rospy.logfatal(e)
