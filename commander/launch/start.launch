@@ -6,7 +6,6 @@
   <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
 
   <!-- Run node all detectors -->
-  <node name="shape_detector" pkg="commander" type="shape_detector.py" output="screen"/>
-  <node name="color_detector" pkg="commander" type="color_detector.py" output="screen"/>
+  <node name="object_classifier" pkg="commander" type="object_classifier.py" output="screen"/>
 
 </launch>

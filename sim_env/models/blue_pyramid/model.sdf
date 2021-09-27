@@ -1,0 +1,34 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+  <model name="pyramid">
+    <static>false</static>
+    <link name="link">
+      <collision name='collision'>
+        <geometry>
+	  <mesh>
+	  	<uri>model://pyramid/meshes/model.dae</uri>
+	  	<scale>1 1 1</scale>
+	  </mesh>
+        </geometry>
+      </collision>
+
+      <visual name='visual'>
+        <geometry>
+	  <mesh>
+	  	<uri>model://pyramid/meshes/model.dae</uri>
+	  	<scale>1 1 1</scale>
+	  </mesh>
+        </geometry>
+				<material>
+					<script>
+						<uri>file://media/materials/scripts/gazebo.material</uri>
+						<name>Gazebo/Blue</name>
+					</script>
+				</material>
+      </visual>
+    </link>
+
+    <plugin name="model_push" filename="libmodel_push.so"/>
+
+  </model>
+</sdf>
