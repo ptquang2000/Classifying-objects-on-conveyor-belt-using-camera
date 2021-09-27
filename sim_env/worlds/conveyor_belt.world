@@ -27,7 +27,7 @@
     </include>
 
     <!-- <plugin name="hello_world" filename="libhello_world.so"/> -->
-    <!-- <plugin name="factory" filename="libfactory.so"/> -->
+		<!-- <plugin name="factory" filename="libfactory.so"/> -->
 
   </world>
 </sdf>

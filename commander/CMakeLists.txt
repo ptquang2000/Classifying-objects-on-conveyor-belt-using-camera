@@ -35,6 +35,7 @@ catkin_package(
 
 #catkin_install_python(PROGRAMS 
 #  scripts/shape_detector.py
+#  scripts/color_detector.py
 #  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
 

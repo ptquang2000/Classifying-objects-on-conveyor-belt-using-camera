@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <!-- Start simulation -->
+  <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
+
+  <!-- Run node all detectors -->
+  <node name="shape_detector" pkg="commander" type="shape_detector.py" output="screen"/>
+  <node name="color_detector" pkg="commander" type="color_detector.py" output="screen"/>
+
+</launch>
