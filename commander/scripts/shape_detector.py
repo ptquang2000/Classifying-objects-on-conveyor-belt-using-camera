@@ -30,9 +30,9 @@ class shape_detector():
     )] = [0]
     # blur image
     src = cv.GaussianBlur(src, (3,3), 0, 0)
-    cv.imshow('Blur', src)
+    #cv.imshow('Blur', src)
     src = cv.Canny(src, threshold1=100, threshold2=200)
-    cv.imshow('Canny', src)
+    #cv.imshow('Canny', src)
     return src
   
   def detecting(self):
