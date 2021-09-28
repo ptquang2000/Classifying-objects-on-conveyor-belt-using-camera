@@ -22,7 +22,6 @@ def object_spawner():
     spawn_sdf_model = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
 
     model_name = models[randint(0, len(models) - 1)]
-    #model_name = models[1]
     model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
     with open(model_path, 'r') as f:
       model_sdf = f.read()

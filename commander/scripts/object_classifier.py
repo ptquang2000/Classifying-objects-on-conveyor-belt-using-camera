@@ -4,6 +4,7 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2 as cv
 import numpy as np
+from itertools import combinations
 from commander.msg import object_info_msg
 
 COLOR = {0: 'Red', 1: 'Green', 2: 'Blue', 3: 'Yellow', 4: 'Orange', 5: 'Purple'}
@@ -134,19 +135,40 @@ class object_detector():
       approx = cv.approxPolyDP(contour, 0.01 * cv.arcLength(contour, True), True)
       cv.drawContours(blank, contours, -1, (255, 0, 0), 2)
       cv.drawContours(blank, [approx], -1, (0, 255, 0), 2)
-      
-      if (edge_count:=len(approx)) == 3:
-        msg.shape = 'Triangle'
-      elif edge_count == 4:
-        msg.shape = 'Rectangle'
-      elif 12 <= edge_count <= 16:
-        msg.shape = 'Circle'
-      #else:
-      #  rospy.loginfo(f'Edges count: {edge_count}')
+      # post processing
+      msg.shape = self.shape(approx)
     #cv.imshow('Contours', blank)
 
     # publishing
     self.pub.publish(msg)
+
+  def shape(self, approx):
+    if len(approx) == 3:
+      return 'Triangle'
+
+    if len(approx) == 4:
+      vects = list(combinations(approx, 2))
+      def angle(pointA, vects):
+        vects = [vect for vect in vects if not any(np.array_equal(pointA, x) for x in vect)]
+        sides = [np.linalg.norm(vect[0] - vect[1]) for vect in vects]
+        diagonal = max(sides)
+        sides.remove(diagonal)
+        angle = np.degrees(np.arccos(
+          (sides[0]**2 + sides[1]**2 - diagonal**2) / (2 * sides[0] * sides[1])
+          ))
+        return round(angle)
+      angles = [angle(approx[i], vects) for i in range(4)]
+      right_angle = [angle for angle in angles if round(angle/10) == 9]
+      #rospy.loginfo(right_angle)
+      if len(right_angle) == 4:
+        return 'Rectangle'
+
+    if 12 <= len(approx)<= 16:
+      return 'Circle'
+
+    #rospy.loginfo(f'Edges count: {edge_count}')
+    return 'Unidentified'
+
 
 def callback(msg):
   red = [np.array([0, 248, 102]), np.array([0, 255, 255])]
