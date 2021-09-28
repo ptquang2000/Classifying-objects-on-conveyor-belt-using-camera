@@ -5,7 +5,6 @@
 #include <ignition/math/Vector3.hh>
 
 const double VEL = -0.3;
-const int EOL_CONVEYOR = -30;
 
 namespace gazebo
 {
@@ -26,8 +25,12 @@ namespace gazebo
     public: void OnUpdate()
     {
       // Apply a small linear velocity to the model.
-      this->model->SetLinearVel(ignition::math::Vector3d(0, VEL, 0));
-      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) == EOL_CONVEYOR)
+      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) > 0)
+	      this->model->SetLinearVel(ignition::math::Vector3d(0, VEL, 0));
+      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) <= 0)
+	      this->model->SetLinearVel(ignition::math::Vector3d(VEL, 0, 0));
+      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) == 0 &&
+          std::ceil(this->model->WorldPose().Pos()[0] * 10) == -30)
         this->model->GetWorld()->RemoveModel(this->model);
     }
 

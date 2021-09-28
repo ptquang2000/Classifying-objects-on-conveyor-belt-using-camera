@@ -6,6 +6,8 @@
   <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
 
   <!-- Run node all detectors -->
-  <node name="object_classifier" pkg="commander" type="object_classifier.py" output="screen"/>
+  <node name="object_classifier_x" pkg="commander" args="camera_x" type="object_classifier.py" output="screen"/>
+  <node name="object_classifier_y" pkg="commander" args="camera_y" type="object_classifier.py" output="screen"/>
+  <node name="object_classifier_z" pkg="commander" args="camera_z" type="object_classifier.py" output="screen"/>
 
 </launch>

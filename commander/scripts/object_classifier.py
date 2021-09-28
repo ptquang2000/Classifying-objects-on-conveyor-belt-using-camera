@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+import sys
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2 as cv
@@ -56,7 +57,7 @@ def hsv_finder(img):
       phMax = hMax
       psMax = sMax
       pvMax = vMax
-    #cv.imshow('image', result)
+    cv.imshow('image', result)
     if cv.waitKey(10) & 0xFF == ord('q'):
       break
 
@@ -89,7 +90,10 @@ class object_detector():
     src = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
     # filter background color
     src[np.where(
-      (src == [178])
+      (src == [178]) |
+      (src == [140]) |
+      (src == [28]) |
+      (src == [20])
     )] = [0]
     # blur image
     src = cv.GaussianBlur(src, (1,1), 0, 0)
@@ -185,7 +189,7 @@ def callback(msg):
   colors.append(orange)
   colors.append(purple)
 
-  pub = rospy.Publisher('object_info', object_info_msg, queue_size=10)
+  pub = rospy.Publisher(f'object_info/{topic}', object_info_msg, queue_size=10)
   bridge = CvBridge()
   try:
     cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -199,8 +203,13 @@ def callback(msg):
 
 def main():
   rospy.init_node('image_processor')
-  rospy.Subscriber('camera/camera_x/image_raw', Image, callback)
+  rospy.Subscriber(f'camera/{topic}/image_raw', Image, callback)
   rospy.spin()
 
 if __name__ == "__main__":
+  args = rospy.myargv(argv=sys.argv)
+  if len(args) != 2:
+    rospy.logerr('Not meet required arguments')
+    sys.exit(1)
+  topic = args[1]
   main()

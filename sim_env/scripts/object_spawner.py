@@ -37,7 +37,7 @@ def object_spawner():
 
 if __name__ == '__main__':
   rospy.init_node('object_spawner', anonymous=True)
-  rate = rospy.Rate(0.4)
+  rate = rospy.Rate(0.25)
   try:
     while not rospy.is_shutdown():
       object_spawner()

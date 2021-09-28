@@ -1,27 +1,9 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
-  <model name="camera_x">
-    <pose>1.25 0 0.3 0 0 3.141592654</pose>
+  <model name="camera_z">
+    <pose>0 0 2 0 1.570796327 0</pose>
     <static>true</static>
-    <link name="stand-link">
-      <collision name="stand-collision">
-        <geometry>
-          <box>
-            <size>0.1 0.1 0.6</size>
-          </box>
-        </geometry>
-      </collision>
-
-      <visual name="stand-visual">
-        <geometry>
-          <box>
-            <size>0.1 0.1 0.6</size>
-          </box>
-        </geometry>
-      </visual>
-    </link>
     <link name="camera-link">
-      <pose>0 0 0.35 0 0 0</pose>
       <collision name="camera-collision">
         <geometry>
           <box>
@@ -52,8 +34,8 @@
             <height>1080</height>
           </image>
           <clip>
-            <near>0.75</near>
-            <far>1.75</far>
+            <near>0.5</near>
+            <far>1.5</far>
           </clip>
         </camera>
         <always_on>1</always_on>
@@ -62,10 +44,10 @@
         <plugin name="camera-x-controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <cameraName>camera/camera_x</cameraName>
+          <cameraName>camera/camera_z</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>camera_x_frame</frameName>
+          <frameName>camera_z_frame</frameName>
         </plugin>
 
       </sensor>
