@@ -105,7 +105,7 @@ class object_detector():
   def detecting(self):
     msg = object_info_msg()
     msg.shape = 'Unidentified'
-    msg.color = 'Plain'
+    msg.color = 'Unidentified'
     # color
     masks = self.masks
     contours = [
@@ -125,8 +125,8 @@ class object_detector():
       msg.color = COLOR[idx]
       #cv.imshow('Image', self.img)
       #cv.imshow('Mask', cv.bitwise_and(self.img, self.img, mask=masks[idx]))
-    elif len(f_area) > 2:
-      msg.color = 'Unidentified'
+    elif len(f_area) == 2:
+      msg.color = 'White'
     
     # shape
     contours, _ = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)

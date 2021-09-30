@@ -5,26 +5,20 @@
     <link name="link">
       <collision name='collision'>
         <geometry>
-	<mesh>
-		<uri>model://pyramid/meshes/model.dae</uri>
-		<scale>1 1 1</scale>
-	</mesh>
+	  <mesh>
+	    <uri>model://pyramid/meshes/model.dae</uri>
+	    <scale>1 1 1</scale>
+	  </mesh>
         </geometry>
       </collision>
 
       <visual name='visual'>
         <geometry>
-					<mesh>
-						<uri>model://pyramid/meshes/model.dae</uri>
-						<scale>1 1 1</scale>
-					</mesh>
+	  <mesh>
+	    <uri>model://pyramid/meshes/model.dae</uri>
+	    <scale>1 1 1</scale>
+	  </mesh>
         </geometry>
-				<material>
-					<script>
-						<uri>file://media/materials/scripts/gazebo.material</uri>
-						<name>Gazebo/White</name>
-					</script>
-				</material>
       </visual>
     </link>
 

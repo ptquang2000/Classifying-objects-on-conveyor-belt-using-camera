@@ -59,10 +59,11 @@
         <always_on>1</always_on>
         <update_rate>30</update_rate>
 
-        <plugin name="camera-x-controller" filename="libgazebo_ros_camera.so">
+        <plugin name="camera-y-controller" filename="libgazebo_ros_camera.so">
+          <robotNamespace>/camera</robotNamespace>
           <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>camera/camera_y</cameraName>
+          <updateRate>30.0</updateRate>
+          <cameraName>camera_y</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>camera_y_frame</frameName>
