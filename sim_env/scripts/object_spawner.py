@@ -7,7 +7,7 @@ from random import randint
 import xml.dom.minidom
 
 models = [
-'sphere', 'pyramid',
+'sphere', 'pyramid','box'
 ]
 colors = ['Red', 'Green', 'Blue', 'Yellow', 'Purple', 'Orange', 'White']
 
@@ -39,7 +39,7 @@ def object_spawner():
     visual.appendChild(material)
     model_sdf = dom.toxml('utf-8').decode('utf-8')
             
-    model_pose =  Pose(Point(0, 3, 0.525), Quaternion(0, 0, 0, 0))
+    model_pose =  Pose(Point(0, 3, 0.725), Quaternion(0, 0, 0, 0))
     model_name += str(rospy.get_rostime().secs)
     
     status_message = spawn_sdf_model(model_name, model_sdf, "", model_pose, "world")

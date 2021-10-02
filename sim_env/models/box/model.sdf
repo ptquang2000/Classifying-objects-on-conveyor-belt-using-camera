@@ -5,8 +5,8 @@
     <link name="link">
       <collision name='collision'>
         <geometry>
-            <box>
-            <side>.3 .3 .3 .3</side>
+           <box>
+            <size>0.4 0.4 0.4 0.4</size>
           </box>
         </geometry>
       </collision>
@@ -14,7 +14,7 @@
       <visual name='visual'>
         <geometry>
           <box>
-            <side>.3 .3 .3 .3</side>
+            <size>0.4 0.4 0.4 0.4</size>
           </box>
         </geometry>
       </visual>
