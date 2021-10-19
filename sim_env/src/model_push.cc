@@ -29,8 +29,7 @@ namespace gazebo
 	      this->model->SetLinearVel(ignition::math::Vector3d(0, VEL, 0));
       if (std::ceil(this->model->WorldPose().Pos()[1] * 10) <= 0)
 	      this->model->SetLinearVel(ignition::math::Vector3d(VEL, 0, 0));
-      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) == 0 &&
-          std::ceil(this->model->WorldPose().Pos()[0] * 10) == -30)
+      if (std::ceil(this->model->WorldPose().Pos()[0] * 10) <= -25)
         this->model->GetWorld()->RemoveModel(this->model);
     }
 

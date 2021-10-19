@@ -21,6 +21,4 @@
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
-  <node name="object_spawner" pkg="sim_env" type="object_spawner.py" respawn="true" output="screen"/>
-
 </launch>

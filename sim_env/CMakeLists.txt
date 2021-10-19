@@ -17,10 +17,10 @@ catkin_package(
   rospy
 )
 
-#catkin_install_python(PROGRAMS 
-#  scripts/object_spawner.py
-#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
+catkin_install_python(PROGRAMS 
+  scripts/object_spawner.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 link_directories(${GAZEBO_LIBRARY_DIRS})
 

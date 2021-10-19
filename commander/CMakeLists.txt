@@ -13,6 +13,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV 4 REQUIRED)
 
+add_service_files(
+  FILES
+  image_capture_srv.srv
+)
+
 add_message_files(
   FILES
   object_info_msg.msg
@@ -33,12 +38,13 @@ catkin_package(
   message_runtime
 )
 
-#catkin_install_python(PROGRAMS 
-#  scripts/shape_detector.py
-#  scripts/color_detector.py
-#  scripts/object_classifier.py
-#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
+catkin_install_python(PROGRAMS 
+  scripts/shape_detector.py
+  scripts/color_detector.py
+  scripts/object_classifier.py
+  scripts/image_capture.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}

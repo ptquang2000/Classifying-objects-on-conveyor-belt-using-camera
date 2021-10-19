@@ -1,0 +1,27 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+  <model name="test">
+    <static>true</static>
+    <link name="link">
+      <collision name='collision'>
+        <geometry>
+          <mesh>
+            <uri>model://test/untitled.dae</uri>
+            <scale>0.25 0.25 0.25</scale>
+          </mesh>
+        </geometry>
+      </collision>
+
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>model://test/untitled.dae</uri>
+            <scale>0.25 0.25 0.25</scale>
+          </mesh>
+        </geometry>
+      </visual>
+  </link>
+
+  <plugin name="model_push" filename="libmodel_push.so"/>
+  </model>
+</sdf>
