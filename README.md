@@ -18,4 +18,4 @@ roslaunch commander toy_detection.launch
 
 ## Demo result
 
-![result](https://github.com/ptquang2000/Classifying-objects-on-conveyor-belt-using-camera/tree/main/demo/demo.png)
+![result](https://raw.githubusercontent.com/ptquang2000/Classifying-objects-on-conveyor-belt-using-camera/main/demo/demo.png)
