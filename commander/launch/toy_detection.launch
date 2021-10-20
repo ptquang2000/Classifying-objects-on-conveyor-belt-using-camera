@@ -11,6 +11,8 @@
   <node name="image_capture" pkg="commander" type="image_capture.py" respawn="true" output="screen"/>
 
   <!-- Run node all detectors
-  <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_classifier.py" output="screen"/>
- -->
+  -->
+  <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_detection.py" output="screen"/>
+  <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" output="screen"/>
+  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" output="screen"/>
 </launch>

@@ -43,6 +43,7 @@ catkin_install_python(PROGRAMS
   scripts/color_detector.py
   scripts/object_classifier.py
   scripts/image_capture.py
+  scripts/toy_detection.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
