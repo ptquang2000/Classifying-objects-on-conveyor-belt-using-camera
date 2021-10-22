@@ -22,8 +22,8 @@
           </mesh>
         </geometry>
       </visual>
-  </link>
+    </link>
 
-  <plugin name="model_push" filename="libmodel_push.so"/>
+    <!-- <plugin name="model_push" filename="libmodel_push.so"/> -->
   </model>
 </sdf>

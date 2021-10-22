@@ -19,6 +19,7 @@ catkin_package(
 
 catkin_install_python(PROGRAMS 
   scripts/object_spawner.py
+  scripts/sample_spawner.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

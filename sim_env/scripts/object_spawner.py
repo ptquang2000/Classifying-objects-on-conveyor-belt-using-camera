@@ -58,8 +58,12 @@ def model_spawner(model):
         if model == 'toy':
             model_name = toys[randint(0, len(toys) - 1)]
             model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
-            with open(model_path, 'r') as f:
-                model_sdf = f.read()
+            dom = xml.dom.minidom.parse(model_path)
+            plugin = dom.createElement('plugin')
+            plugin.setAttribute('name', 'model_push')
+            plugin.setAttribute('filename', 'libmodel_push.so')
+            dom.getElementsByTagName('model')[0].appendChild(plugin)
+            model_sdf = dom.toxml('utf-8').decode('utf-8')
             model_pose = Pose(
                 Point(0, 2.5, 0.525),
                 Quaternion(*quaternion_from_euler(0, 0, uniform(-1, 1))

@@ -3,13 +3,13 @@
 
   <!-- Define arguments -->
   <arg name="world" default="empty"/>
-  <arg name="paused" default="true"/>
+  <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="verbose" default="true"/>
-  
+
   <!-- Load the world environment -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find sim_env)/worlds/conveyor_belt.world"/>

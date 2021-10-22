@@ -17,14 +17,16 @@ CAMERA_HEIGHT = 1080
 
 
 class toy_detector():
-    def __init__(self, image, label='labels.txt', interpreter='detect.tflite'):
-        self._image = image
+    def __init__(self,label='labels.txt', interpreter='detect.tflite'):
+        self._bridge = CvBridge()
+        self._image = None
         path = f"{RosPack().get_path('commander')}/tensorflow/"
         self._path = path+label
         self._interpreter = Interpreter(path+interpreter)
         self._interpreter.allocate_tensors()
         _, self._input_height, self._input_width, _ = self._interpreter.get_input_details()[
             0]['shape']
+        self._publisher = rospy.Publisher(f'toy_detection/{topic}', Image, queue_size=10)
 
     @property
     def get_labels(self):
@@ -71,42 +73,42 @@ class toy_detector():
         return results
 
 
-def callback(msg):
-    bridge = CvBridge()
-    try:
-        cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-        resized = cv.resize(cv.cvtColor(
-            cv_image, cv.COLOR_BGR2RGB), (320, 320))
-        detector = toy_detector(resized)
-        results = detector.detect_toys(0.3)
+    def callback(self, msg):
+        try:
+            cv_image = self._bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+            self._image = cv.resize(cv.cvtColor(
+                cv_image, cv.COLOR_BGR2RGB), (320, 320))
+                #cv_image, cv.COLOR_BGR2RGB), (640, 640))
+            results = self.detect_toys()
 
-        rospy.loginfo(results)
-        for result in results:
-            ymin, xmin, ymax, xmax = result['bounding_box']
-            xmin = int(max(1, xmin * CAMERA_WIDTH))
-            xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
-            ymin = int(max(1, ymin * CAMERA_HEIGHT))
-            ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
+            rospy.loginfo(results)
+            for result in results:
+                ymin, xmin, ymax, xmax = result['bounding_box']
+                xmin = int(max(1, xmin * CAMERA_WIDTH))
+                xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
+                ymin = int(max(1, ymin * CAMERA_HEIGHT))
+                ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
 
-            cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
-            text = f"{detector.get_labels[int(result['class_id'])]} {int(result['score']*100)}%"
-            cv.putText(cv_image, text, (xmin, min(
-                ymax, CAMERA_HEIGHT-20)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
+                cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
+                text = f"{self.get_labels[int(result['class_id'])]} {int(result['score']*100)}%"
+                cv.putText(cv_image, text, (xmin, min(
+                    ymax, CAMERA_HEIGHT-20)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
 
-        cv.imshow(topic, cv.resize(cv_image, (320, 240)))
+            self._publisher.publish(self._bridge.cv2_to_imgmsg(cv_image, encoding='bgr8'))
+            '''
+            cv.imshow(topic, cv.resize(cv_image, (320, 240)))
+            if cv.waitKey(1) == 27:
+                cv.destroyAllWindows()
+            '''
 
-        if cv.waitKey(1) == 27:
-            cv.destroyAllWindows()
-        '''
-        '''
-
-    except CvBridgeError as e:
-        rospy.logfatal(e)
+        except CvBridgeError as e:
+            rospy.logfatal(e)
 
 
 def main():
     rospy.init_node('image_processor')
-    rospy.Subscriber(f'camera/{topic}/image_raw', Image, callback)
+    detector = toy_detector()
+    rospy.Subscriber(f'camera/{topic}/image_raw', Image, detector.callback)
     rospy.spin()
 
 
