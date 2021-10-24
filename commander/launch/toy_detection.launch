@@ -12,9 +12,10 @@
 
   <!-- Run node all detectors
   -->
-  <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_detection.py" output="screen"/>
-  <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" output="screen"/>
-  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" output="screen"/>
+  <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_detection.py" />
+  <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" />
+  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" />
 
   <node name="web_video_server" pkg="web_video_server" type="web_video_server"/>
+  <node name="web_server_for_csocuc_project" pkg="web-server-for-csocuc-project" type="main.py" output="screen" respawn="true"/>
 </launch>

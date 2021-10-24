@@ -8,6 +8,6 @@
   <node name="image_capture" pkg="commander" type="image_capture.py" respawn="true" output="screen"/>
   <!-- Trigger spawner node -->
   <arg name="objects" default="toy"/>
-  <arg name="index" default="11"/>
+  <arg name="index" default="1"/>
   <node name="sample_spawner" pkg="sim_env" args="$(arg objects) $(arg index)" type="sample_spawner.py" respawn="false" output="screen"/>
 </launch>

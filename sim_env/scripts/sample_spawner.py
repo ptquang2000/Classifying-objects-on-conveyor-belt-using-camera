@@ -25,7 +25,7 @@ toys = [
 ]
 
 
-def model_spawner(model, index):
+def model_spawner(model, index, name):
 
     rospy.wait_for_service('gazebo/spawn_sdf_model')
     try:
@@ -59,7 +59,7 @@ def model_spawner(model, index):
             model_pose = Pose(Point(0, 3, 0.725), Quaternion(0, 0, 0, 0))
 
         if model == 'toy':
-            model_name = name = toys[4]
+            model_name = name
             model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
             with open(model_path, 'r') as f:
                 model_sdf = f.read()
@@ -104,14 +104,17 @@ if __name__ == '__main__':
         rospy.logerr('Need model paramaters')
         sys.exit(1)
     model = args[1]
-    index = int(args[2])
-    max = index + 10
+    max = int(args[2]) + 10
     rospy.init_node('object_spawner', anonymous=True)
     rate = rospy.Rate(0.5)
     try:
-        while not rospy.is_shutdown() and index < max:
-            rate.sleep()
-            model_spawner(model, index)
-            index += 1
+        if model == 'toy':
+            for toy in toys:
+                index = max - 10
+                while not rospy.is_shutdown() and index < max:
+                    rate.sleep()
+                    model_spawner(model, index, toy)
+                    index += 1
+
     except rospy.ROSInterruptException:
         pass
