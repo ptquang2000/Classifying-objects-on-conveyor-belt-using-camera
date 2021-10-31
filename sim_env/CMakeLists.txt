@@ -34,11 +34,11 @@ include_directories(
 # Gazebo set flags
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
-#add_library(hello_world SHARED src/hello_world.cc)
-#target_link_libraries(hello_world 
-#  ${catkin_LIBRARIES}
-#  ${GAZEBO_LIBRARIES}
-#)
+add_library(disable_physic SHARED src/disable_physic.cc)
+target_link_libraries(disable_physic 
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES}
+)
 add_library(model_push SHARED src/model_push.cc)
 target_link_libraries(model_push 
   ${catkin_LIBRARIES}

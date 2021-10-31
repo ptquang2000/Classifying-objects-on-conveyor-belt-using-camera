@@ -6,6 +6,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2 as cv
 import numpy as np
 from commander.msg import object_info_msg
+from commander.msg import image_details_msg
 from tflite_runtime.interpreter import Interpreter
 import re
 from rospkg import RosPack
@@ -14,7 +15,6 @@ from rospkg import RosPack
 # CAMERA_HEIGHT = 480
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
-
 
 class toy_detector():
     def __init__(self,label='labels.txt', interpreter='detect.tflite'):
@@ -26,7 +26,7 @@ class toy_detector():
         self._interpreter.allocate_tensors()
         _, self._input_height, self._input_width, _ = self._interpreter.get_input_details()[
             0]['shape']
-        self._publisher = rospy.Publisher(f'toy_detection/{topic}', Image, queue_size=10)
+        self._details_publisher = rospy.Publisher(f'toy_detection/{topic}/details/', image_details_msg, queue_size=10)
 
     @property
     def get_labels(self):
@@ -72,6 +72,27 @@ class toy_detector():
                 results.append(result)
         return results
 
+    def publishing(self, prop):
+        result, cv_image = prop
+        label = self.get_labels[int(result['class_id'])]
+        score = int(result['score']*100) 
+        ymin, xmin, ymax, xmax = result['bounding_box']
+        xmin = int(max(1, xmin * CAMERA_WIDTH))
+        xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
+        ymin = int(max(1, ymin * CAMERA_HEIGHT))
+        ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
+
+        cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
+        cv.putText(cv_image, f"{label} {score}%", (xmin, min(
+            ymax, CAMERA_HEIGHT-20)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
+
+        img_details_msg = image_details_msg()
+        img_details_msg.score = score
+        img_details_msg.label = label
+        img_details_msg.camera = topic
+        img_details_msg.image = self._bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
+        self._details_publisher.publish(img_details_msg)
+
 
     def callback(self, msg):
         try:
@@ -79,22 +100,19 @@ class toy_detector():
             self._image = cv.resize(cv.cvtColor(
                 cv_image, cv.COLOR_BGR2RGB), (320, 320))
                 #cv_image, cv.COLOR_BGR2RGB), (640, 640))
-            results = self.detect_toys()
+            results = self.detect_toys(0.7)
 
-            rospy.loginfo(results)
             for result in results:
-                ymin, xmin, ymax, xmax = result['bounding_box']
-                xmin = int(max(1, xmin * CAMERA_WIDTH))
-                xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
-                ymin = int(max(1, ymin * CAMERA_HEIGHT))
-                ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
+                self.publishing((result, cv_image))
 
-                cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
-                text = f"{self.get_labels[int(result['class_id'])]} {int(result['score']*100)}%"
-                cv.putText(cv_image, text, (xmin, min(
-                    ymax, CAMERA_HEIGHT-20)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
+            if len(results) == 0:
+                img_details_msg = image_details_msg()
+                img_details_msg.score = 0
+                img_details_msg.label = ''
+                img_details_msg.camera = topic
+                img_details_msg.image = self._bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
+                self._details_publisher.publish(img_details_msg)
 
-            self._publisher.publish(self._bridge.cv2_to_imgmsg(cv_image, encoding='bgr8'))
             '''
             cv.imshow(topic, cv.resize(cv_image, (320, 240)))
             if cv.waitKey(1) == 27:

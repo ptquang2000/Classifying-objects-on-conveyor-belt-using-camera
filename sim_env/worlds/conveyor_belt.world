@@ -25,14 +25,14 @@
     <include>
       <uri>model://camera_x</uri>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://camera_y</uri>
     </include>
     <include>
       <uri>model://camera_z</uri>
-    </include>
+    </include> -->
 
-    <!-- <plugin name="hello_world" filename="libhello_world.so"/> -->
+    <!--plugin name="disable_physic" filename="libdisable_physic.so"/-->
 		<!-- <plugin name="factory" filename="libfactory.so"/> -->
 
   </world>

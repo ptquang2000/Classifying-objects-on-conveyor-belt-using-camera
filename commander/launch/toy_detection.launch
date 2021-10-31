@@ -2,20 +2,17 @@
 
 <launch>
 
+  <node name="my_web_server" pkg="web-server-for-csocuc-project" type="main.py" output="screen" respawn="true"/>
   <!-- Start simulation -->
   <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
   <!-- Trigger spawner node -->
   <arg name="objects" default="toy"/>
   <node name="object_spawner" pkg="sim_env" args="$(arg objects)" type="object_spawner.py" respawn="true" output="screen"/>
-  <!-- Start capture service-->
-  <node name="image_capture" pkg="commander" type="image_capture.py" respawn="true" output="screen"/>
 
   <!-- Run node all detectors
   -->
   <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_detection.py" />
-  <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" />
-  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" />
-
-  <node name="web_video_server" pkg="web_video_server" type="web_video_server"/>
-  <node name="web_server_for_csocuc_project" pkg="web-server-for-csocuc-project" type="main.py" output="screen" respawn="true"/>
+  <!-- <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" />
+  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" /> -->
+ 
 </launch>

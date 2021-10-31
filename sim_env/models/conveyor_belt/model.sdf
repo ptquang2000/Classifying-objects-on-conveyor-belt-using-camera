@@ -2,7 +2,7 @@
 <sdf version="1.4">
   <model name="conveyor_belt">
     <static>true</static>
-    <link name="link-y">
+	    <link name="link-y">
       <pose>0 1.25 0.5 0 0 0</pose>
       <collision name="collision-y">
         <geometry>
@@ -33,7 +33,7 @@
           </script>
         </material>
       </visual>
-      
+
     </link>
     <link name="link-x">
       <pose>-1.75 0 0.5 0 0 0</pose>
@@ -66,7 +66,7 @@
           </script>
         </material>
       </visual>
-      
+
     </link>
   </model>
 </sdf>

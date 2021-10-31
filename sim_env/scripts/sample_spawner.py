@@ -19,9 +19,9 @@ colors = ['Red', 'Green', 'Blue', 'Yellow', 'Purple', 'Orange', 'White']
 toys = [
     'bear',
     'car',
-    'train',
     'giraffe',
-    'helicopter'
+    'helicopter',
+    'train',
 ]
 
 
@@ -107,6 +107,7 @@ if __name__ == '__main__':
     max = int(args[2]) + 10
     rospy.init_node('object_spawner', anonymous=True)
     rate = rospy.Rate(0.5)
+    rate.sleep()
     try:
         if model == 'toy':
             for toy in toys:

@@ -2,8 +2,9 @@
 import xml.dom.minidom
 import sys
 import rospy
-from gazebo_msgs.srv import SpawnModel
-from geometry_msgs.msg import Pose, Point, Quaternion
+from gazebo_msgs.srv import SpawnModel, SetPhysicsProperties
+from gazebo_msgs.msg import ODEPhysics
+from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from rospkg import RosPack
 from random import randint, uniform
 from tf.transformations import quaternion_from_euler
@@ -78,6 +79,19 @@ def model_spawner(model):
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s" % e)
 
+def disable_physics():
+    rospy.wait_for_service('gazebo/set_physics_properties')
+    try:
+        time_step = 0.0015
+        max_update_rate = 1000.0
+        gravity = Vector3(0.0, 0.0, 0.0)
+        ode_config = ODEPhysics(False, 0, 0, 1.3, 0.0, 0.001, 100.0, 0.0, 0.2, 20)
+        disable_physics_srv = rospy.ServiceProxy(
+            'gazebo/set_physics_properties', SetPhysicsProperties)
+        resp = disable_physics_srv(time_step, max_update_rate, gravity, ode_config)
+        rospy.loginfo(resp.status_message)
+    except rospy.ServiceException as e:
+        rospy.loginfo("Service call failed: %s" % e)
 
 if __name__ == '__main__':
     args = rospy.myargv(argv=sys.argv)
@@ -86,8 +100,9 @@ if __name__ == '__main__':
         sys.exit(1)
     model = args[1]
     rospy.init_node('object_spawner', anonymous=True)
-    rate = rospy.Rate(0.25)
+    rate = rospy.Rate(0.2)
     try:
+        disable_physics()
         while not rospy.is_shutdown():
             model_spawner(model)
             rate.sleep()

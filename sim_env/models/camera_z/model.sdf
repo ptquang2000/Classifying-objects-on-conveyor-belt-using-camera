@@ -45,12 +45,12 @@
           </clip>
         </camera>
         <always_on>1</always_on>
-        <update_rate>30</update_rate>
+        <update_rate>60</update_rate>
 
         <plugin name="camera-z-controller" filename="libgazebo_ros_camera.so">
 	  <robotNamespace>/camera</robotNamespace>	
           <alwaysOn>true</alwaysOn>
-          <updateRate>30.0</updateRate>
+          <updateRate>60.0</updateRate>
           <cameraName>camera_z</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>

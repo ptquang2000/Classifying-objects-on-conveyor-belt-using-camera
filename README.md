@@ -1,6 +1,6 @@
 # Object classification projects using cameras
 
-This project simulates a gazebo world includes:
+This project simulates a gazebo world which includes:
 
 1. Conveyor belt
 2. Three cameras
