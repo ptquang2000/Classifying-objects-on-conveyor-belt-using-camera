@@ -1,9 +1,3 @@
-[submodule "async_web_server_cpp"]
-	path = async_web_server_cpp
-	url = https://github.com/sfalexrog/async_web_server_cpp.git
-[submodule "web_video_server"]
-	path = web_video_server
-	url = https://github.com/RobotWebTools/web_video_server.git
 [submodule "web-server-for-csocuc-project"]
 	path = web-server-for-csocuc-project
 	url = https://github.com/ptquang2000/web-server-for-csocuc-project.git
