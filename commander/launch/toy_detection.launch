@@ -11,8 +11,8 @@
 
   <!-- Run node all detectors
   -->
-  <node name="toy_classifiyer_x" pkg="commander" args="camera_x" type="toy_detection.py" />
-  <!-- <node name="toy_classifiyer_y" pkg="commander" args="camera_y" type="toy_detection.py" />
-  <node name="toy_classifiyer_z" pkg="commander" args="camera_z" type="toy_detection.py" /> -->
+  <node name="toy_classifiyer_x" pkg="commander" args="camera_x x_ssd_mobnet_100k.tflite" type="toy_detection.py" />
+  <node name="toy_classifiyer_y" pkg="commander" args="camera_y y_ssd_mobnet_100k.tflite" type="toy_detection.py" />
+  <node name="toy_classifiyer_z" pkg="commander" args="camera_z z_ssd_mobnet_100k.tflite" type="toy_detection.py" />
  
 </launch>

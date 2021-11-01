@@ -15,6 +15,7 @@ from rospkg import RosPack
 # CAMERA_HEIGHT = 480
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
+THRESH_HOLD = 0.9
 
 class toy_detector():
     def __init__(self,label='labels.txt', interpreter='detect.tflite'):
@@ -52,7 +53,7 @@ class toy_detector():
             self._interpreter.get_tensor(output_details['index']))
         return tensor
 
-    def detect_toys(self, threshold=0.8):
+    def detect_toys(self, threshold=THRESH_HOLD):
         self.set_input_tensor()
         self._interpreter.invoke()
         # Get all output details
@@ -100,12 +101,11 @@ class toy_detector():
             self._image = cv.resize(cv.cvtColor(
                 cv_image, cv.COLOR_BGR2RGB), (320, 320))
                 #cv_image, cv.COLOR_BGR2RGB), (640, 640))
-            results = self.detect_toys(0.7)
+            results = self.detect_toys()
 
-            for result in results:
-                self.publishing((result, cv_image))
-
-            if len(results) == 0:
+            if len(results) == 1:
+                self.publishing((results[0], cv_image))
+            else:
                 img_details_msg = image_details_msg()
                 img_details_msg.score = 0
                 img_details_msg.label = ''
@@ -125,15 +125,18 @@ class toy_detector():
 
 def main():
     rospy.init_node('image_processor')
-    detector = toy_detector()
+    detector = toy_detector(interpreter=model_file)
     rospy.Subscriber(f'camera/{topic}/image_raw', Image, detector.callback)
     rospy.spin()
 
 
 if __name__ == "__main__":
     args = rospy.myargv(argv=sys.argv)
-    if len(args) != 2:
+    if len(args) == 1:
         rospy.logerr('Not meet required arguments')
         sys.exit(1)
     topic = args[1]
+    model_file = "detect.tflite"
+    if len(args) == 3:
+        model_file = args[2]
     main()

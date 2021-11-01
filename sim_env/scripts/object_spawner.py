@@ -100,7 +100,7 @@ if __name__ == '__main__':
         sys.exit(1)
     model = args[1]
     rospy.init_node('object_spawner', anonymous=True)
-    rate = rospy.Rate(0.2)
+    rate = rospy.Rate(0.25)
     try:
         disable_physics()
         while not rospy.is_shutdown():
