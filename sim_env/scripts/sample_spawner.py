@@ -3,8 +3,9 @@ from time import time
 import xml.dom.minidom
 import sys
 import rospy
-from gazebo_msgs.srv import SpawnModel, DeleteModel
-from geometry_msgs.msg import Pose, Point, Quaternion
+from gazebo_msgs.srv import SpawnModel, DeleteModel, SetPhysicsProperties
+from gazebo_msgs.msg import ODEPhysics
+from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from rospkg import RosPack
 from random import randint, uniform
 from tf.transformations import quaternion_from_euler
@@ -27,12 +28,7 @@ toys = [
 
 def model_spawner(model, index, name):
 
-    rospy.wait_for_service('gazebo/spawn_sdf_model')
     try:
-
-        # spawn object
-        spawn_sdf_model = rospy.ServiceProxy(
-            'gazebo/spawn_sdf_model', SpawnModel)
 
         if model == 'shape':
             model_name = shapes[randint(0, len(shapes) - 1)]
@@ -75,28 +71,38 @@ def model_spawner(model, index, name):
 
         status_message = spawn_sdf_model(
             model_name, model_sdf, "", model_pose, "world")
-        rospy.loginfo("Status message: %s" % status_message)
-        rate.sleep()
+        rospy.loginfo(f"Spawn message:{model_name}\n{status_message}")
+        while not status_message.success:
+            pass
+        else: 
+            rate.sleep()
 
         # capture model
-        capture = rospy.ServiceProxy('image_capture', image_capture_srv)
-        rospy.wait_for_service('image_capture', timeout=5)
         resp = capture(f'{name}/{name}_{index}')
-        rospy.loginfo(resp)
-        path = RosPack().get_path('commander') + \
-            f'/images/{name}/{name}_{index}_z.jpg'
-        while not os.path.exists(path):
-            pass
+        rospy.loginfo(f"Capture message:\n{resp}")
+        rate.sleep()
 
         # delete model
-        delete_model = rospy.ServiceProxy('gazebo/delete_model', DeleteModel)
-        rospy.wait_for_service('gazebo/delete_model', timeout=5)
         status_msg = delete_model(model_name)
-        rospy.loginfo(f'Delete model: {status_msg}')
+        rospy.loginfo(f'Delete model:{model_name}\n{status_msg}')
+        rate.sleep()
 
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s" % e)
 
+def disable_physics():
+    rospy.wait_for_service('gazebo/set_physics_properties')
+    try:
+        time_step = 0.0015
+        max_update_rate = 1000.0
+        gravity = Vector3(0.0, 0.0, 0.0)
+        ode_config = ODEPhysics(False, 0, 0, 1.3, 0.0, 0.001, 100.0, 0.0, 0.2, 20)
+        disable_physics_srv = rospy.ServiceProxy(
+            'gazebo/set_physics_properties', SetPhysicsProperties)
+        resp = disable_physics_srv(time_step, max_update_rate, gravity, ode_config)
+        rospy.loginfo(resp.status_message)
+    except rospy.ServiceException as e:
+        rospy.loginfo("Service call failed: %s" % e)
 
 if __name__ == '__main__':
     args = rospy.myargv(argv=sys.argv)
@@ -106,8 +112,15 @@ if __name__ == '__main__':
     model = args[1]
     max = int(args[2]) + 10
     rospy.init_node('object_spawner', anonymous=True)
+    disable_physics()
     rate = rospy.Rate(0.5)
-    rate.sleep()
+    # spawn object
+    spawn_sdf_model = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
+    rospy.wait_for_service('gazebo/spawn_sdf_model', timeout=10)
+    capture = rospy.ServiceProxy('image_capture', image_capture_srv)
+    rospy.wait_for_service('image_capture', timeout=10)
+    delete_model = rospy.ServiceProxy('gazebo/delete_model', DeleteModel)
+    rospy.wait_for_service('gazebo/delete_model', timeout=10)
     try:
         if model == 'toy':
             for toy in toys:

@@ -25,15 +25,6 @@
     <include>
       <uri>model://camera_x</uri>
     </include>
-    <include>
-      <uri>model://camera_y</uri>
-    </include>
-    <include>
-      <uri>model://camera_z</uri>
-    </include>
-
-    <!--plugin name="disable_physic" filename="libdisable_physic.so"/-->
-		<!-- <plugin name="factory" filename="libfactory.so"/> -->
 
   </world>
 </sdf>

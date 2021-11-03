@@ -20,8 +20,8 @@ add_service_files(
 
 add_message_files(
   FILES
-  object_info_msg.msg
   image_details_msg.msg
+  toy_score_msg.msg
 )
 
 generate_messages(
@@ -41,11 +41,9 @@ catkin_package(
 )
 
 catkin_install_python(PROGRAMS 
-  scripts/shape_detector.py
-  scripts/color_detector.py
-  scripts/object_classifier.py
   scripts/image_capture.py
   scripts/toy_detection.py
+  scripts/image_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

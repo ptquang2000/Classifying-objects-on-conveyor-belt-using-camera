@@ -9,10 +9,7 @@
   <arg name="objects" default="toy"/>
   <node name="object_spawner" pkg="sim_env" args="$(arg objects)" type="object_spawner.py" respawn="true" output="screen"/>
 
-  <!-- Run node all detectors
-  -->
-  <node name="toy_classifiyer_x" pkg="commander" args="camera_x x_ssd_mobnet_100k.tflite" type="toy_detection.py" />
-  <node name="toy_classifiyer_y" pkg="commander" args="camera_y y_ssd_mobnet_100k.tflite" type="toy_detection.py" />
-  <node name="toy_classifiyer_z" pkg="commander" args="camera_z z_ssd_mobnet_100k.tflite" type="toy_detection.py" />
+  <node name="toy_classifiyer_x" pkg="commander" args="camera_x keras/model_x.h5 keras/labels.txt" type="toy_detection.py" output="screen" />
+  <node name="image_publisher_x" pkg="commander" args="camera_x tf/x_ssd_mobnet_100k.tflite tf/labels.txt" type="image_publisher.py" output="screen"/>
  
 </launch>

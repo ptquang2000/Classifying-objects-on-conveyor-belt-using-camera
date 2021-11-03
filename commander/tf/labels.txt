@@ -1,0 +1,5 @@
+Bear
+Car
+Giraffe
+Helicopter
+Train
