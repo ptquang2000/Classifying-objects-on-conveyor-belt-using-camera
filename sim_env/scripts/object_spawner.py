@@ -82,8 +82,8 @@ def model_spawner(model):
 def disable_physics():
     rospy.wait_for_service('gazebo/set_physics_properties')
     try:
-        time_step = 0.0016
-        max_update_rate = 850.0
+        time_step = 0.001
+        max_update_rate = 1000.0
         gravity = Vector3(0.0, 0.0, 0.0)
         ode_config = ODEPhysics(False, 0, 0, 1.3, 0.0, 0.001, 100.0, 0.0, 0.2, 20)
         disable_physics_srv = rospy.ServiceProxy(
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         sys.exit(1)
     model = args[1]
     rospy.init_node('object_spawner', anonymous=True)
-    rate = rospy.Rate(0.25)
+    rate = rospy.Rate(0.2)
     try:
         disable_physics()
         while not rospy.is_shutdown():

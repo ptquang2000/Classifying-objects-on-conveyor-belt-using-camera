@@ -2,14 +2,23 @@
 
 <launch>
 
-  <node name="my_web_server" pkg="web-server-for-csocuc-project" type="main.py" output="screen" respawn="true"/>
-  <!-- Start simulation -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+     <arg name="port" value="8080"/>
+  </include>
+
+  <!-- Gazebo simulation -->
   <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
-  <!-- Trigger spawner node -->
+
+
   <arg name="objects" default="toy"/>
   <node name="object_spawner" pkg="sim_env" args="$(arg objects)" type="object_spawner.py" respawn="true" output="screen"/>
 
-  <node name="toy_classifiyer_x" pkg="commander" args="camera_x keras/model_x.h5 keras/labels.txt" type="toy_detection.py" output="screen" />
-  <node name="image_publisher_x" pkg="commander" args="camera_x tf/x_ssd_mobnet_100k.tflite tf/labels.txt" type="image_publisher.py" output="screen"/>
+  <arg name="keras_file" default="keras/model_x.h5"/>
+  <arg name="label_file" default="keras/labels.txt"/>
+  <arg name="model_file" default="tf/x_ssd_mobnet_100k.tflite"/>
+  <arg name="topic" default="camera_x "/>
+  <!-- Drawing box by coco ssd mobile net filtered with teachable machine model result
+  Toy prediction using teachable machine model -->
+  <node name="toy_classifiyer_x" pkg="commander" args="$(arg topic) $(arg keras_file) $(arg model_file) $(arg label_file)" type="toy_detection.py" output="screen" />
  
 </launch>

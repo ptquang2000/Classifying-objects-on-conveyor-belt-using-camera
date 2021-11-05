@@ -56,25 +56,21 @@
             -->
           </image>
           <clip>
-            <!--
-            <near>0.75</near>
-            <far>1.75</far>
-            -->
             <near>0.2</near>
             <far>300</far>
           </clip>
         </camera>
         <always_on>1</always_on>
-        <update_rate>60</update_rate>
+        <update_rate>30</update_rate>
 
         <plugin name="camera-x-controller" filename="libgazebo_ros_camera.so">
           <robotNamespace>/camera</robotNamespace>
           <alwaysOn>true</alwaysOn>
-          <updateRate>60.0</updateRate>
+          <updateRate>30.0</updateRate>
           <cameraName>camera_x</cameraName>
           <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>camera_x_frame</frameName>
+          <!-- <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>camera_x_frame</frameName> -->
         </plugin>
 
       </sensor>
