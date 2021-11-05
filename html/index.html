@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toy detection camera</title>
+    <!-- Compressed CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation.min.css"
+      crossorigin="anonymous"
+    />
+    <!-- foundation-float.min.css: Compressed CSS with legacy Float Grid -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation-float.min.css"
+      crossorigin="anonymous"
+    />
+    <script
+      type="text/javascript"
+      src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"
+    ></script>
+    <style>
+      .radius {
+        border-radius: 999px;
+      }
+      .label {
+        margin-bottom: 10px;
+      }
+      body {
+        display: flex;
+        height: 100vh;
+        align-items: center;
+      }
+      .progress-meter,
+      .progress-meter-text {
+        transition: width 1s;
+        border-bottom-right-radius: 999px;
+        border-top-right-radius: 999px;
+      }
+    </style>
+  </head>
+  <body class="row">
+    <div class="columns">
+      <div class="medium-8 columns">
+        <div class="callout" data-equalizer-watch>
+          <img src="data:image/png;base64" alt="image" />
+        </div>
+      </div>
+      <div class="medium-4 columns">
+        <div class="row">
+          <span class="radius label primary">Bear</span>
+          <span class="radius label primary" id="bear">0</span>
+          <div
+            class="radius progress primary"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuetext="0 percent"
+            aria-valuemax="100"
+          >
+            <span class="radius progress-meter bear" style="width: 0%">
+              <span class="progress-meter-text">0%</span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <span class="radius label secondary">Car</span>
+          <span class="radius label secondary" id="car">0</span>
+          <div
+            class="radius progress secondary"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuetext="0 percent"
+            aria-valuemax="100"
+          >
+            <span class="radius progress-meter car" style="width: 0%">
+              <span class="progress-meter-text">0%</span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <span class="radius label success">Giraffe</span>
+          <span class="radius label success" id="giraffe">0</span>
+          <div
+            class="radius progress success"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuetext="0 percent"
+            aria-valuemax="100"
+          >
+            <span class="radius progress-meter giraffe" style="width: 0%">
+              <span class="progress-meter-text">0%</span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <span class="radius label alert">Helicopter</span>
+          <span class="radius label alert" id="helicopter">0</span>
+          <div
+            class="radius progress alert"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuetext="0 percent"
+            aria-valuemax="100"
+          >
+            <span class="radius progress-meter helicopter" style="width: 0%">
+              <span class="progress-meter-text">0%</span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <span class="radius label warning">Train</span>
+          <span class="radius label warning" id="train">0</span>
+          <div
+            class="radius progress warning"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuetext="0 percent"
+            aria-valuemax="100"
+          >
+            <span class="radius progress-meter train" style="width: 0%">
+              <span class="progress-meter-text">0%</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" type="text/javascript">
+      // Connecting to ROS
+      // -----------------
+
+      var ros = new ROSLIB.Ros({
+        url: "ws://localhost:8080",
+      });
+
+      ros.on("connection", function () {
+        console.log("Connected to websocket server.");
+      });
+
+      ros.on("error", function (error) {
+        console.log("Error connecting to websocket server: ", error);
+      });
+
+      ros.on("close", function () {
+        console.log("Connection to websocket server closed.");
+      });
+
+      // Subscribing to a Topic
+      // ----------------------
+
+      var scores_subscriber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/toy_detection/camera_x/score",
+        messageType: "commander/toy_msg",
+      });
+
+      scores_subscriber.subscribe(function (scores) {
+        for (let prop in scores) {
+          const labels = document
+            .querySelectorAll(`.${prop}`)
+            .forEach((progress) => {
+              var width = parseInt(progress.style.width.replace("%", ""));
+              progress.style.width = scores[prop] + "%";
+              if (scores[prop] != 0) {
+                progress.querySelector("span").textContent = scores[prop] + "%";
+              } else {
+                progress.querySelector("span").textContent = "";
+              }
+            });
+        }
+      });
+
+      var counter_subcriber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/toy_detection/camera_x/counter",
+        messageType: "commander/toy_msg",
+      });
+
+      counter_subcriber.subscribe(function (counter) {
+        for (let prop in counter) {
+          const labels = document.getElementById(`${prop}`);
+          labels.textContent = counter[prop];
+        }
+      });
+
+      var image_subscirber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/toy_detection/camera_x/img",
+        messageType: "std_msgs/String",
+      });
+
+      image_subscirber.subscribe(function (image) {
+        var img = document.querySelector("img");
+        img.src = `data:image/png;base64,${image.data}`;
+      });
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha06-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/js/foundation.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

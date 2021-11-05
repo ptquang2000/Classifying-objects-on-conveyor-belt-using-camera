@@ -35,7 +35,7 @@ class toy_detector():
         _, self._input_height, self._input_width, _ = self._interpreter.get_input_details()[0]['shape']
 
         # Ros puslisher
-        self._score_publisher = rospy.Publisher(f'toy_detection/{topic}/score/', toy_msg, queue_size=10)
+        self._score_publisher = rospy.Publisher(f'toy_detection/{topic}/score', toy_msg, queue_size=10)
         self._img_publisher = rospy.Publisher(f'toy_detection/{topic}/img', String, queue_size=10)
         self._counter_publisher = rospy.Publisher(f'toy_detection/{topic}/counter', toy_msg, queue_size=10)
 
