@@ -16,8 +16,8 @@ from PIL import ImageOps, Image as myPIL
 
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
-THRESH_HOLD = 0
-radius = 50
+THRESH_HOLD = 0.5
+radius = 5
 
 class toy_detector():
     def __init__(self, keras, interpreter, labels):
@@ -65,11 +65,16 @@ class toy_detector():
         classes = self.get_output_tensor(3)
 
         results = []
-        score = 0
         for i in range(count):
-            if scores[i] >= threshold and classes[i] == idx and ( not results or scores[i] > score ):
-                results.append( boxes[i] )
-                score = scores[i]
+            if scores[i] >= threshold and classes[i] in idx:
+                for result in results:
+                    if result['label'] == classes[i]:
+                        if result['score'] < scores[i]:
+                            result['score'] = scores[i]
+                        break
+                else:
+                    results.append( { 'box': boxes[i], 'label': classes[i], 'score': scores[i] } )
+
         return results
 
     
@@ -80,6 +85,7 @@ class toy_detector():
         elif label == self._right['name']:
             self._counter[label] += 1
             self._right['name'] = ''
+
         counter_msg = toy_msg()
         counter_msg.bear = self._counter['Bear']
         counter_msg.car = self._counter['Car']
@@ -116,7 +122,7 @@ class toy_detector():
         toy_score = toy_msg(*prediction)
         self._score_publisher.publish(toy_score)
 
-        return prediction.index(max(prediction))
+        return [i for i, val in enumerate(prediction) if val != 0]
 
 
     def callback(self, msg):
@@ -124,22 +130,22 @@ class toy_detector():
             cv_image = self._bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             # Teachable machine
             self._pil_image = myPIL.fromarray(cv.cvtColor(cv_image, cv.COLOR_BGR2RGB))
-            idx = self.classify_image()
+            idxes = self.classify_image()
 
             # Tensorflow
             self._image = cv.resize(cv.cvtColor(
                 cv_image, cv.COLOR_BGR2RGB), (320, 320))
-            boxes = self.draw_contours(idx=idx)
-            label = self.get_labels[idx]
+            results = self.draw_contours(idx=idxes)
 
-            if len(boxes) == 1:
-                ymin, xmin, ymax, xmax = boxes[0]
+            for result in results:
+                label = self.get_labels[result['label']]
+                ymin, xmin, ymax, xmax = result['box']
                 xmin = int(max(1, xmin * CAMERA_WIDTH))
                 xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
                 ymin = int(max(1, ymin * CAMERA_HEIGHT))
                 ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
                 
-                midpoint = ( int((xmin+xmax)/2), int((ymin+ymax)/2) )
+                midpoint = ( xmin, int((ymin+ymax)/2) )
                 self.count_object(midpoint, label)
                 cv.circle(cv_image, midpoint, radius, (255, 0, 0), 2)
 

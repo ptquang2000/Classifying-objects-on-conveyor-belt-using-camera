@@ -18,11 +18,11 @@ shapes = [
 colors = ['Red', 'Green', 'Blue', 'Yellow', 'Purple', 'Orange', 'White']
 
 toys = [
-    'bear',
-    'car',
-    'giraffe',
+    # 'bear',
+    # 'car',
+    # 'giraffe',
     'helicopter',
-    'train',
+    # 'train',
 ]
 
 
@@ -55,8 +55,8 @@ def model_spawner(model, index, name):
             model_pose = Pose(Point(0, 3, 0.725), Quaternion(0, 0, 0, 0))
 
         if model == 'toy':
-            model_name = name
-            model_path = RosPack().get_path('sim_env')+'/models/'+model_name+'/model.sdf'
+            model_name = f"{name}"
+            model_path = RosPack().get_path('sim_env')+'/models/'+name+'/model.sdf'
             with open(model_path, 'r') as f:
                 model_sdf = f.read()
             model_pose = Pose(
@@ -72,13 +72,10 @@ def model_spawner(model, index, name):
         status_message = spawn_sdf_model(
             model_name, model_sdf, "", model_pose, "world")
         rospy.loginfo(f"Spawn message:{model_name}\n{status_message}")
-        while not status_message.success:
-            pass
-        else: 
-            rate.sleep()
+        rate.sleep()
 
         # capture model
-        resp = capture(f'{name}/{name}_{index}')
+        resp = capture(f'{name}/{model_name}{index}')
         rospy.loginfo(f"Capture message:\n{resp}")
         rate.sleep()
 
@@ -106,26 +103,33 @@ def disable_physics():
 
 if __name__ == '__main__':
     args = rospy.myargv(argv=sys.argv)
-    if len(args) != 3:
+    if len(args) != 4:
         rospy.logerr('Need model paramaters')
         sys.exit(1)
-    model = args[1]
-    max = int(args[2]) + 10
+    model = args[1].strip()
+    min = int(args[2].strip())
+    max = int(args[3].strip())
     rospy.init_node('object_spawner', anonymous=True)
     disable_physics()
-    rate = rospy.Rate(0.5)
+    rate = rospy.Rate(0.25)
     # spawn object
     spawn_sdf_model = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
     rospy.wait_for_service('gazebo/spawn_sdf_model', timeout=10)
-    capture = rospy.ServiceProxy('image_capture', image_capture_srv)
-    rospy.wait_for_service('image_capture', timeout=10)
     delete_model = rospy.ServiceProxy('gazebo/delete_model', DeleteModel)
     rospy.wait_for_service('gazebo/delete_model', timeout=10)
+    capture = rospy.ServiceProxy('image_capture', image_capture_srv)
+    rospy.wait_for_service('image_capture', timeout=10)
+    rate.sleep()
+    rate.sleep()
+    rate.sleep()
+    rate.sleep()
+    rate.sleep()
+    rate.sleep()
     try:
         if model == 'toy':
             for toy in toys:
-                index = max - 10
-                while not rospy.is_shutdown() and index < max:
+                index = min
+                while not rospy.is_shutdown() and index <= max:
                     rate.sleep()
                     model_spawner(model, index, toy)
                     index += 1

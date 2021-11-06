@@ -13,9 +13,9 @@
   <arg name="objects" default="toy"/>
   <node name="object_spawner" pkg="sim_env" args="$(arg objects)" type="object_spawner.py" respawn="true" output="screen"/>
 
-  <arg name="keras_file" default="keras/model_x.h5"/>
+  <arg name="keras_file" default="keras/x_100samples.h5"/>
   <arg name="label_file" default="keras/labels.txt"/>
-  <arg name="model_file" default="tf/x_ssd_mobnet_100k.tflite"/>
+  <arg name="model_file" default="tf/x_100samples.tflite"/>
   <arg name="topic" default="camera_x "/>
   <!-- Drawing box by coco ssd mobile net filtered with teachable machine model result
   Toy prediction using teachable machine model -->
