@@ -27,10 +27,14 @@ namespace gazebo
       // Apply a small linear velocity to the model.
       if (std::ceil(this->model->WorldPose().Pos()[1] * 10) > 0)
 	      this->model->SetLinearVel(ignition::math::Vector3d(0, VEL, 0));
-      if (std::ceil(this->model->WorldPose().Pos()[1] * 10) <= 0)
-	      this->model->SetLinearVel(ignition::math::Vector3d(VEL, 0, 0));
-      if (std::ceil(this->model->WorldPose().Pos()[0] * 10) <= -25)
-        this->model->GetWorld()->RemoveModel(this->model);
+      // Turn to negative x
+     // if (std::ceil(this->model->WorldPose().Pos()[1] * 10) <= 0)
+     //         this->model->SetLinearVel(ignition::math::Vector3d(VEL, 0, 0));
+     // if (std::ceil(this->model->WorldPose().Pos()[0] * 10) <= -25)
+     //   this->model->GetWorld()->RemoveModel(this->model);
+      // No turning
+     if (std::ceil(this->model->WorldPose().Pos()[1] * 10) <= -25)
+       this->model->GetWorld()->RemoveModel(this->model);
     }
 
     // Pointer to the model

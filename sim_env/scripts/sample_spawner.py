@@ -18,11 +18,11 @@ shapes = [
 colors = ['Red', 'Green', 'Blue', 'Yellow', 'Purple', 'Orange', 'White']
 
 toys = [
-    # 'bear',
-    # 'car',
-    # 'giraffe',
+    'bear',
+    'car',
+    'giraffe',
     'helicopter',
-    # 'train',
+    'train',
 ]
 
 

@@ -17,7 +17,7 @@ from PIL import ImageOps, Image as myPIL
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
 THRESH_HOLD = 0.5
-radius = 5
+radius = 10
 
 class toy_detector():
     def __init__(self, keras, interpreter, labels):
@@ -122,7 +122,8 @@ class toy_detector():
         toy_score = toy_msg(*prediction)
         self._score_publisher.publish(toy_score)
 
-        return [i for i, val in enumerate(prediction) if val != 0]
+        results = [i for i, val in enumerate(prediction) if val != 0]
+        return results, prediction.index(max(prediction))
 
 
     def callback(self, msg):
@@ -130,12 +131,15 @@ class toy_detector():
             cv_image = self._bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             # Teachable machine
             self._pil_image = myPIL.fromarray(cv.cvtColor(cv_image, cv.COLOR_BGR2RGB))
-            idxes = self.classify_image()
+            idxes, max_score_idx = self.classify_image()
 
             # Tensorflow
             self._image = cv.resize(cv.cvtColor(
                 cv_image, cv.COLOR_BGR2RGB), (320, 320))
             results = self.draw_contours(idx=idxes)
+
+            if not results:
+                self._right['name'] = self.get_labels[max_score_idx]
 
             for result in results:
                 label = self.get_labels[result['label']]
@@ -147,13 +151,13 @@ class toy_detector():
                 
                 midpoint = ( xmin, int((ymin+ymax)/2) )
                 self.count_object(midpoint, label)
-                cv.circle(cv_image, midpoint, radius, (255, 0, 0), 2)
+                # cv.circle(cv_image, midpoint, radius, (255, 0, 0), 2)
 
                 cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
                 cv.putText(cv_image, label, (xmin, min(
                     ymax, CAMERA_HEIGHT-10)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
 
-            cv.line(cv_image, (int(CAMERA_WIDTH/2)+radius, 0), (int(CAMERA_WIDTH/2)+radius, CAMERA_HEIGHT), (0, 0, 255), 4)
+            # cv.line(cv_image, (int(CAMERA_WIDTH/2)+radius, 0), (int(CAMERA_WIDTH/2)+radius, CAMERA_HEIGHT), (0, 0, 255), 4)
             # cv.imshow(topic, cv.resize(cv_image, (640, 480)))
             # if cv.waitKey(1) == 27:
             #     cv.destroyAllWindows()
