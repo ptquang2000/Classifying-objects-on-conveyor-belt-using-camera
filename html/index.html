@@ -160,7 +160,7 @@
 
       var scores_subscriber = new ROSLIB.Topic({
         ros: ros,
-        name: "/toy_detection/camera_x/score",
+        name: "/toy_detection/score",
         messageType: "commander/toy_msg",
       });
 
@@ -182,7 +182,7 @@
 
       var counter_subcriber = new ROSLIB.Topic({
         ros: ros,
-        name: "/toy_detection/camera_x/counter",
+        name: "/toy_detection/counter",
         messageType: "commander/toy_msg",
       });
 
@@ -195,7 +195,7 @@
 
       var image_subscirber = new ROSLIB.Topic({
         ros: ros,
-        name: "/toy_detection/camera_x/img",
+        name: "/toy_detection/img",
         messageType: "std_msgs/String",
       });
 

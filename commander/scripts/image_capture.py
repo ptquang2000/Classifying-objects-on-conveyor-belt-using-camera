@@ -23,7 +23,7 @@ class image_capture():
         self.write_img(response)
         return response
 
-    def camera_x(self, msg):
+    def camera(self, msg):
         try:
             self._img_x = self._bridge.imgmsg_to_cv2(
                 msg, desired_encoding='bgr8')
@@ -35,7 +35,7 @@ def main():
     rospy.init_node('image_capture')
     capturer = image_capture()
     rospy.Service('image_capture', image_capture_srv, capturer.export_img)
-    rospy.Subscriber(f'camera/camera_x/image_raw', Image, capturer.camera_x)
+    rospy.Subscriber(f'sensor/camera/image_raw', Image, capturer.camera)
     rospy.spin()
 
 

@@ -23,7 +23,7 @@
     </include>
 
     <include>
-      <uri>model://camera_x</uri>
+      <uri>model://camera</uri>
     </include>
 
   </world>

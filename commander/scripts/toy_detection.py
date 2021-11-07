@@ -16,7 +16,7 @@ from PIL import ImageOps, Image as myPIL
 
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
-THRESH_HOLD = 0.5
+THRESH_HOLD = 0
 radius = 10
 
 class toy_detector():
@@ -35,9 +35,9 @@ class toy_detector():
         _, self._input_height, self._input_width, _ = self._interpreter.get_input_details()[0]['shape']
 
         # Ros puslisher
-        self._score_publisher = rospy.Publisher(f'toy_detection/{topic}/score', toy_msg, queue_size=10)
-        self._img_publisher = rospy.Publisher(f'toy_detection/{topic}/img', String, queue_size=10)
-        self._counter_publisher = rospy.Publisher(f'toy_detection/{topic}/counter', toy_msg, queue_size=10)
+        self._score_publisher = rospy.Publisher(f'toy_detection/score', toy_msg, queue_size=10)
+        self._img_publisher = rospy.Publisher(f'toy_detection/img', String, queue_size=10)
+        self._counter_publisher = rospy.Publisher(f'toy_detection/counter', toy_msg, queue_size=10)
 
         # Counter
         self._counter = {label: 0 for label in self.get_labels.values()}
@@ -122,8 +122,7 @@ class toy_detector():
         toy_score = toy_msg(*prediction)
         self._score_publisher.publish(toy_score)
 
-        results = [i for i, val in enumerate(prediction) if val != 0]
-        return results, prediction.index(max(prediction))
+        return [prediction.index(max(prediction))], prediction.index(max(prediction))
 
 
     def callback(self, msg):
@@ -151,16 +150,10 @@ class toy_detector():
                 
                 midpoint = ( xmin, int((ymin+ymax)/2) )
                 self.count_object(midpoint, label)
-                # cv.circle(cv_image, midpoint, radius, (255, 0, 0), 2)
 
                 cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
                 cv.putText(cv_image, label, (xmin, min(
                     ymax, CAMERA_HEIGHT-10)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
-
-            # cv.line(cv_image, (int(CAMERA_WIDTH/2)+radius, 0), (int(CAMERA_WIDTH/2)+radius, CAMERA_HEIGHT), (0, 0, 255), 4)
-            # cv.imshow(topic, cv.resize(cv_image, (640, 480)))
-            # if cv.waitKey(1) == 27:
-            #     cv.destroyAllWindows()
 
             img = base64.b64encode( cv.imencode('.jpg', cv_image)[1] ).decode('utf-8')
             self._img_publisher.publish(img)
@@ -172,7 +165,7 @@ class toy_detector():
 
 def main():
     detector = toy_detector(keras= keras_file, interpreter=model_file, labels=labels_file)
-    rospy.Subscriber(f'camera/{topic}/image_raw', Image, detector.callback)
+    rospy.Subscriber(f'sensor/camera/image_raw', Image, detector.callback)
     rospy.spin()
 
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <!-- Start simulation -->
+  <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
+  <!-- Start capture service-->
+  <node name="image_capture" pkg="commander" type="image_capture.py" respawn="true" output="screen"/>
+  <!-- Trigger spawner node -->
+  <arg name="objects" default="toy"/>
+  <arg name="min" default="200"/>
+  <arg name="max" default="202"/>
+  <node name="sample_spawner" pkg="sim_env" args="$(arg objects) $(arg min) $(arg max)" type="sample_spawner.py" respawn="false" output="screen"/>
+</launch>
