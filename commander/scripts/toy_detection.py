@@ -55,7 +55,7 @@ class toy_detector():
             self._interpreter.get_tensor(output_details['index']))
         return tensor
 
-    def draw_contours(self, idx, threshold=THRESH_HOLD):
+    def find_boxes(self, idx, threshold=THRESH_HOLD):
         self.set_input_tensor()
         self._interpreter.invoke()
         # Get all output details
@@ -135,7 +135,7 @@ class toy_detector():
             # Tensorflow
             self._image = cv.resize(cv.cvtColor(
                 cv_image, cv.COLOR_BGR2RGB), (320, 320))
-            results = self.draw_contours(idx=idxes)
+            results = self.find_boxes(idx=idxes)
 
             if not results:
                 self._right['name'] = self.get_labels[max_score_idx]
