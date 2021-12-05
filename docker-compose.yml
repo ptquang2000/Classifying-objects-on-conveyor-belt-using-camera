@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+    master:
+        image: ros:noetic
+        container_name: master
+        tty: true
+        command: roscore
+        expose:
+          - 11311
+    simulation:
+        build: 
+            context: ./
+            dockerfile: ./demo/simulation/Dockerfile
+        container_name: simulation
+        tty: true
+        depends_on:
+            - master
+        environment:
+            - DISPLAY=:0
+            - ROS_MASTER_URI=http://master:11311
+    detector:
+        build:
+            context: ./
+            dockerfile: ./demo/detector/Dockerfile
+        container_name: detector
+        tty: true
+        depends_on:
+            - master
+        ports:
+            - 8080:8080
+        environment:
+            - ROS_MASTER_URI=http://master:11311
