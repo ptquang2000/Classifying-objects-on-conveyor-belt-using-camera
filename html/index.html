@@ -40,8 +40,21 @@
       .progress-meter,
       .progress-meter-text {
         transition: width 1s;
+        border-bottom-left-radius: 999px;
+        border-top-left-radius: 999px;
         border-bottom-right-radius: 999px;
         border-top-right-radius: 999px;
+      }
+      .one {
+        opacity: 0;
+        font-size: large;
+      }
+      .animation {
+        animation: fade 2s linear;
+      }
+      @keyframes fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
       }
     </style>
   </head>
@@ -56,6 +69,7 @@
         <div class="row">
           <span class="radius label primary">Bear</span>
           <span class="radius label primary" id="bear">0</span>
+          <span class="bear-plus-one one">+1</span>
           <div
             class="radius progress primary"
             role="progressbar"
@@ -72,6 +86,7 @@
         <div class="row">
           <span class="radius label secondary">Car</span>
           <span class="radius label secondary" id="car">0</span>
+          <span class="car-plus-one one">+1</span>
           <div
             class="radius progress secondary"
             role="progressbar"
@@ -88,6 +103,7 @@
         <div class="row">
           <span class="radius label success">Giraffe</span>
           <span class="radius label success" id="giraffe">0</span>
+          <span class="giraffe-plus-one one">+1</span>
           <div
             class="radius progress success"
             role="progressbar"
@@ -104,6 +120,7 @@
         <div class="row">
           <span class="radius label alert">Helicopter</span>
           <span class="radius label alert" id="helicopter">0</span>
+          <span class="helicopter-plus-one one">+1</span>
           <div
             class="radius progress alert"
             role="progressbar"
@@ -120,6 +137,7 @@
         <div class="row">
           <span class="radius label warning">Train</span>
           <span class="radius label warning" id="train">0</span>
+          <span class="train-plus-one one">+1</span>
           <div
             class="radius progress warning"
             role="progressbar"
@@ -136,6 +154,16 @@
       </div>
     </div>
     <script type="text/javascript" type="text/javascript">
+      function animation (label) {
+        let e = document.querySelector(`.${label}-plus-one`);
+        e.classList.add("animation");
+        e.addEventListener('animationend', () => {
+          console.log(e);
+          e.classList.remove("animation");
+        })
+      }
+
+
       // Connecting to ROS
       // -----------------
 
@@ -171,9 +199,10 @@
             .forEach((progress) => {
               var width = parseInt(progress.style.width.replace("%", ""));
               progress.style.width = scores[prop] + "%";
-              if (scores[prop] != 0) {
+              if (scores[prop] > 5) {
                 progress.querySelector("span").textContent = scores[prop] + "%";
               } else {
+                progress.style.width = 5 + "%";
                 progress.querySelector("span").textContent = "";
               }
             });
@@ -189,6 +218,8 @@
       counter_subcriber.subscribe(function (counter) {
         for (let prop in counter) {
           const labels = document.getElementById(`${prop}`);
+          if (parseInt(labels.innerText) != counter[prop])
+            animation(prop);
           labels.textContent = counter[prop];
         }
       });
@@ -203,6 +234,7 @@
         var img = document.querySelector("img");
         img.src = `data:image/png;base64,${image.data}`;
       });
+
     </script>
 
     <script

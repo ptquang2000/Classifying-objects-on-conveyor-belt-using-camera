@@ -67,7 +67,7 @@ def model_spawner(model):
             model_sdf = dom.toxml('utf-8').decode('utf-8')
             model_pose = Pose(
                 Point(0, 2.5, 0.525),
-                Quaternion(*quaternion_from_euler(0, 0, uniform(-1, 1))
+                Quaternion(*quaternion_from_euler(0, 0, uniform(0, 6.28))
                            ))
 
         model_name += str(rospy.get_rostime().secs)

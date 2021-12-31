@@ -59,13 +59,15 @@ def model_spawner(model, index, name):
             model_path = RosPack().get_path('sim_env')+'/models/'+name+'/model.sdf'
             with open(model_path, 'r') as f:
                 model_sdf = f.read()
-            model_pose = Pose(
-                Point(0, 0, 0.525),
-                Quaternion(*quaternion_from_euler(0, 0, uniform(-1, 0))
-                           )) if index % 2 == 0 else Pose(
-                Point(0, 0, 0.525),
-                Quaternion(*quaternion_from_euler(0, 0, uniform(0, 1))
-                           ))
+            if index % 4 == 0:
+                quanternion_ = Quaternion(*quaternion_from_euler(0, 0, uniform(4.71, 6.28)))
+            elif index % 4 == 1:
+                quanternion_ = Quaternion(*quaternion_from_euler(0, 0, uniform(3.14, 4.71)))
+            elif index % 4 == 1:
+                quanternion_ = Quaternion(*quaternion_from_euler(0, 0, uniform(1.57, 3.14)))
+            else:
+                quanternion_ = Quaternion(*quaternion_from_euler(0, 0, uniform(0, 1.57)))
+            model_pose = Pose(Point(0, 0, 0.525), quanternion_)
 
         model_name += str(rospy.get_rostime().secs)
 

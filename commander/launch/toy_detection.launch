@@ -2,13 +2,8 @@
 
 <launch>
 
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
-     <arg name="port" value="8080"/>
-  </include>
-
   <!-- Gazebo simulation -->
   <include file="$(find sim_env)/launch/conveyor_belt.launch"/>
-
 
   <arg name="objects" default="toy"/>
   <node name="object_spawner" pkg="sim_env" args="$(arg objects)" type="object_spawner.py" respawn="true" output="screen"/>
@@ -17,8 +12,10 @@
   <arg name="label_file" default="keras/labels.txt"/>
   <arg name="model_file" default="tf/model.tflite"/>
   <arg name="topic" default="camera "/>
-  <!-- Drawing box by coco ssd mobile net filtered with teachable machine model result
-  Toy prediction using teachable machine model -->
   <node name="toy_classifiyer" pkg="commander" args="$(arg topic) $(arg keras_file) $(arg model_file) $(arg label_file)" type="toy_detection.py" output="screen" />
  
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+     <arg name="port" value="8080"/>
+  </include>
+
 </launch>

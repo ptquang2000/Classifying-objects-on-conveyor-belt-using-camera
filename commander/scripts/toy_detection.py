@@ -16,8 +16,8 @@ from PIL import ImageOps, Image as myPIL
 
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1080
-THRESH_HOLD = 0
-radius = 10
+THRESH_HOLD = 0.2
+MAX_SCORE = 70
 
 class toy_detector():
     def __init__(self, keras, interpreter, labels):
@@ -27,7 +27,7 @@ class toy_detector():
 
         # Teachable machine
         self._pil_image = None
-        self._model = load_model(path+keras)
+        self._model = load_model(path+keras, compile=False)
         # Tensorflow
         self._image = None
         self._interpreter = Interpreter(path+interpreter)
@@ -79,7 +79,7 @@ class toy_detector():
 
     
     def count_object(self, midpoint, label):
-        if midpoint[0] - (int(CAMERA_WIDTH/2)+radius) > 0:
+        if midpoint[0] - int(CAMERA_WIDTH/8)*3 > 0:
             self._right['coord'] = midpoint
             self._right['name'] = label
         elif label == self._right['name']:
@@ -122,7 +122,8 @@ class toy_detector():
         toy_score = toy_msg(*prediction)
         self._score_publisher.publish(toy_score)
 
-        return [prediction.index(max(prediction))], prediction.index(max(prediction))
+        max_predict = max(prediction)
+        return max_predict, [prediction.index(max_predict)], prediction.index(max_predict)
 
 
     def callback(self, msg):
@@ -130,7 +131,7 @@ class toy_detector():
             cv_image = self._bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             # Teachable machine
             self._pil_image = myPIL.fromarray(cv.cvtColor(cv_image, cv.COLOR_BGR2RGB))
-            idxes, max_score_idx = self.classify_image()
+            max_score, idxes, max_score_idx = self.classify_image()
 
             # Tensorflow
             self._image = cv.resize(cv.cvtColor(
@@ -141,18 +142,24 @@ class toy_detector():
                 self._right['name'] = self.get_labels[max_score_idx]
 
             for result in results:
+                if max_score < MAX_SCORE:
+                    break
+
                 label = self.get_labels[result['label']]
                 ymin, xmin, ymax, xmax = result['box']
                 xmin = int(max(1, xmin * CAMERA_WIDTH))
                 xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
                 ymin = int(max(1, ymin * CAMERA_HEIGHT))
                 ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
+
+                if {xmin, ymin, xmax, ymax} & {CAMERA_HEIGHT, CAMERA_WIDTH}:
+                    continue
                 
                 midpoint = ( xmin, int((ymin+ymax)/2) )
                 self.count_object(midpoint, label)
 
                 cv.rectangle(cv_image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
-                cv.putText(cv_image, label, (xmin, min(
+                cv.putText(cv_image, f"{label} {int(result['score']*100)}", (xmin, min(
                     ymax, CAMERA_HEIGHT-10)), cv.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv.LINE_AA)
 
             img = base64.b64encode( cv.imencode('.jpg', cv_image)[1] ).decode('utf-8')
