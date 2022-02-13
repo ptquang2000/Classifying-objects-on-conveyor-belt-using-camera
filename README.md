@@ -7,7 +7,7 @@ This project simulates a world which includes:
 3. Five models (Bear, Car, Giraffe, Helicopter, Train)
 
 ## Run on local machine
-### Requirements
+### Dependencies
 
 - Installing [rosbridge_server](https://wiki.ros.org/rosbridge_suite) package for visualization on browser with this [html file](https://github.com/ptquang2000/Classifying-objects-on-conveyor-belt-using-camera/blob/main/html/index.html).
 - Installing the [PyCoral API](https://coral.ai/docs/edgetpu/tflite-python/#inferencing-example) for running [Teachable machine](https://teachablemachine.withgoogle.com/) model.
